@@ -54,7 +54,7 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         // Simpan alamat default user jika belum ada
-        if (!$user->address) {
+        if (! $user->address) {
             $user->update(['address' => $validated['pickup_address']]);
         }
 
@@ -91,10 +91,9 @@ class DashboardController extends Controller
         }
 
         DB::transaction(function () use ($user, $commodity, $qty, $totalCost) {
-            // 1. Potong saldo user & stok gudang
+            // 1. Potong saldo user (stok gudang berkurang saat admin memvalidasi voucher)
             $newBalance = $user->balance - $totalCost;
             $user->update(['balance' => $newBalance]);
-            $commodity->decrement('stock', $qty);
 
             // 2. Catat mutasi debit di Buku Besar (Ledger)
             LedgerMutation::create([
@@ -107,7 +106,7 @@ class DashboardController extends Controller
 
             // 3. Terbitkan Kode Voucher Unik
             CommodityVoucher::create([
-                'voucher_code' => 'VCH-' . strtoupper(Str::random(6)),
+                'voucher_code' => 'VCH-'.strtoupper(Str::random(6)),
                 'user_id' => $user->id,
                 'commodity_id' => $commodity->id,
                 'quantity' => $qty,
@@ -116,6 +115,6 @@ class DashboardController extends Controller
             ]);
         });
 
-        return back()->with('success', "Berhasil menukar {$qty}x {$commodity->name}! Tunjukkan kode voucher Anda ke petugas gudang.");
+        return back()->with('success', "Berhasil menukar {$qty}x {$commodity->name}! Tunjukkan kode voucher ke Admin Pengelola untuk validasi pengambilan barang.");
     }
 }

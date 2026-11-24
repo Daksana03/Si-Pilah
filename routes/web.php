@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Petugas\DashboardController as PetugasDashboardController;
@@ -47,10 +48,18 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return 'Halo '.Auth::user()->name.'! Ini Dashboard Admin Pengelola.
-                <form method="POST" action="'.route('logout').'">'.csrf_field().'<button type="submit">Logout</button></form>';
-    })->name('dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    Route::post('/categories', [AdminDashboardController::class, 'storeCategory'])->name('categories.store');
+    Route::put('/categories/{category}', [AdminDashboardController::class, 'updateCategory'])->name('categories.update');
+    Route::delete('/categories/{category}', [AdminDashboardController::class, 'destroyCategory'])->name('categories.destroy');
+
+    Route::post('/commodities', [AdminDashboardController::class, 'storeCommodity'])->name('commodities.store');
+    Route::put('/commodities/{commodity}', [AdminDashboardController::class, 'updateCommodity'])->name('commodities.update');
+    Route::delete('/commodities/{commodity}', [AdminDashboardController::class, 'destroyCommodity'])->name('commodities.destroy');
+
+    Route::post('/vouchers/{voucher}/validate', [AdminDashboardController::class, 'validateVoucher'])->name('vouchers.validate');
+    Route::post('/sales', [AdminDashboardController::class, 'storeSale'])->name('sales.store');
 });
 
 Route::middleware(['auth', 'role:warga'])->prefix('warga')->name('warga.')->group(function () {

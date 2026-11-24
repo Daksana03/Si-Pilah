@@ -24,6 +24,14 @@ test('warga dashboard script no longer calls the browser confirm dialog', functi
         ->and($script)->not->toContain('confirm(');
 });
 
+test('dashboard script remembers the active tab across redirects', function () {
+    $script = file_get_contents(public_path('js/warga-dashboard.js'));
+
+    expect($script)->toContain("'activeTab:' + window.location.pathname")
+        ->toContain('localStorage.setItem(tabStorageKey, targetId)')
+        ->toContain('localStorage.getItem(tabStorageKey)');
+});
+
 test('redeeming a commodity keeps warehouse stock until admin validates the voucher', function () {
     $warga = User::factory()->create(['role' => 'warga', 'balance' => 200000]);
 

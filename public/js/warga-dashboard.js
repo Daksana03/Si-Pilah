@@ -1,22 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Navigasi Tab Interaktif
+    // 1. Navigasi Tab Interaktif (tab aktif diingat per halaman)
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabPanels = document.querySelectorAll('.tab-panel');
+    const tabStorageKey = 'activeTab:' + window.location.pathname;
+
+    const activateTab = (targetId) => {
+        tabButtons.forEach((b) => b.classList.remove('active'));
+        tabPanels.forEach((p) => p.classList.remove('active'));
+
+        const button = document.querySelector('.tab-btn[data-target="' + targetId + '"]');
+        const panel = document.getElementById(targetId);
+
+        if (button && panel) {
+            button.classList.add('active');
+            panel.classList.add('active');
+            localStorage.setItem(tabStorageKey, targetId);
+        }
+    };
 
     tabButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            const targetId = btn.getAttribute('data-target');
-
-            tabButtons.forEach((b) => b.classList.remove('active'));
-            tabPanels.forEach((p) => p.classList.remove('active'));
-
-            btn.classList.add('active');
-            const targetPanel = document.getElementById(targetId);
-            if (targetPanel) {
-                targetPanel.classList.add('active');
-            }
-        });
+        btn.addEventListener('click', () => activateTab(btn.getAttribute('data-target')));
     });
+
+    // pulihkan tab terakhir setelah redirect/refresh
+    const storedTab = localStorage.getItem(tabStorageKey);
+    if (storedTab && document.getElementById(storedTab)) {
+        activateTab(storedTab);
+    }
 
     // 2. Konfirmasi penukaran saldo lewat modal (bukan alert bawaan browser)
     const modal = document.getElementById('redeemModal');

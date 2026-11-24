@@ -329,7 +329,7 @@
                             <div class="form-group">
                                 <label for="sale-price">Harga Jual per Satuan</label>
                                 <input type="number" id="sale-price" name="price_per_unit" min="0" step="100" value="{{ $wasteCategories->first()->sell_price ?? '' }}" required>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">Otomatis dari kategori terpilih; ubah hanya bila pabrik menawar beda.</span>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Ubah hanya bila pabrik menawar beda.</span>
                             </div>
                         </div>
                         <div class="form-row">

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\Warga\DashboardController as WargaDashboardController;
 
 // 1. Smart Root Redirect (Prevents infinite loop when already logged in)
 Route::get('/', function () {
@@ -54,4 +55,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         return 'Halo ' . Auth::user()->name . '! Ini Dashboard Admin Pengelola. 
                 <form method="POST" action="' . route('logout') . '">' . csrf_field() . '<button type="submit">Logout</button></form>';
     })->name('dashboard');
+});
+
+Route::middleware(['auth', 'role:warga'])->prefix('warga')->name('warga.')->group(function () {
+    Route::get('/dashboard', [WargaDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/pickup', [WargaDashboardController::class, 'storePickup'])->name('pickup.store');
+    Route::post('/redeem', [WargaDashboardController::class, 'redeemCommodity'])->name('commodity.redeem');
 });

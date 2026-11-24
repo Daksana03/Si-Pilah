@@ -23,6 +23,20 @@ use Illuminate\Notifications\Notifiable;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
+    public function pickupRequests()
+{
+    return $this->hasMany(PickupRequest::class)->latest();
+}
+
+public function ledgerMutations()
+{
+    return $this->hasMany(LedgerMutation::class)->latest();
+}
+
+public function vouchers()
+{
+    return $this->hasMany(CommodityVoucher::class)->latest();
+}
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 

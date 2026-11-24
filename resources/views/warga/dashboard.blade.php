@@ -280,6 +280,20 @@
         </section>
     </main>
 
+    <!-- Modal konfirmasi penukaran komoditas -->
+    <div class="modal-overlay" id="redeemModal" role="dialog" aria-modal="true" aria-labelledby="redeemModalTitle" hidden>
+        <div class="modal-box">
+            <h3 id="redeemModalTitle" data-modal-title>Konfirmasi Penukaran</h3>
+            <p class="modal-detail" data-modal-detail></p>
+            <p class="modal-note">Saldo tabungan Anda dikurangi dan kode voucher diterbitkan setelah penukaran berhasil.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" data-modal-cancel>Batal</button>
+                <button type="button" class="btn btn-primary" data-modal-confirm>Ya, Tukarkan</button>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('js/warga-dashboard.js') }}" defer></script>
+
 </body>
 </html>

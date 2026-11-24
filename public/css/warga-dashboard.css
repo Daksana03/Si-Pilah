@@ -456,7 +456,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .badge-menunggu { background: #fef3c7; color: #92400e; }
-.badge-dijadwalkan, .badge-dijemput { background: #dbeafe; color: #1e40af; }
+.badge-dijadwalkan, .badge-dijemput, .badge-ditimbang { background: #dbeafe; color: #1e40af; }
 .badge-selesai, .badge-aktif, .badge-kredit { background: #dcfce7; color: #15803d; }
 .badge-dibatalkan, .badge-debit { background: #fee2e2; color: #b91c1c; }
 .badge-digunakan { background: #e2e8f0; color: #475569; }
@@ -466,6 +466,88 @@ input:focus, select:focus, textarea:focus {
     padding: 2rem 1rem;
     color: var(--text-muted);
     font-size: 0.88rem;
+}
+
+/* Modal konfirmasi */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    background: rgba(15, 23, 42, 0.55);
+}
+
+.modal-overlay[hidden] {
+    display: none;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+    padding: 1.5rem;
+    animation: modal-in 0.16s ease-out;
+}
+
+.modal-box h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.modal-detail {
+    margin-top: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 10px;
+    background: var(--primary-soft);
+    color: var(--primary-dark);
+    font-weight: 600;
+    font-size: 0.92rem;
+}
+
+.modal-note {
+    margin-top: 0.65rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+}
+
+.btn-ghost {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+
+.btn-ghost:hover {
+    background: #f8fafc;
+}
+
+@keyframes modal-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal-box {
+        animation: none;
+    }
 }
 
 @media (max-width: 820px) {

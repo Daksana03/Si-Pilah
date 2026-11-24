@@ -10,7 +10,7 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
+    {
         Schema::create('pickup_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -19,10 +19,10 @@ return new class extends Migration
             $table->string('time_slot'); // Pagi (08:00-11:00) / Sore (14:00-17:00)
             $table->text('pickup_address');
             $table->text('estimated_notes'); // Catatan jenis & perkiraan berat sampah
-            $table->enum('status', ['menunggu', 'dijadwalkan', 'dijemput', 'selesai', 'dibatalkan'])->default('menunggu');
+            $table->enum('status', ['menunggu', 'dijadwalkan', 'dijemput', 'ditimbang', 'selesai', 'dibatalkan'])->default('menunggu');
             $table->decimal('total_weight', 8, 2)->nullable();
             $table->decimal('total_earned', 12, 2)->nullable();
             $table->timestamps();
         });
-}
+    }
 };

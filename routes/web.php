@@ -1,18 +1,19 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Petugas\DashboardController as PetugasDashboardController;
+use App\Http\Controllers\Warga\DashboardController as WargaDashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\GoogleAuthController;
-use App\Http\Controllers\Warga\DashboardController as WargaDashboardController;
 
 // 1. Smart Root Redirect (Prevents infinite loop when already logged in)
 Route::get('/', function () {
     if (Auth::check()) {
         return match (Auth::user()->role) {
-            'admin'   => redirect()->route('admin.dashboard'),
+            'admin' => redirect()->route('admin.dashboard'),
             'petugas' => redirect()->route('petugas.dashboard'),
-            default   => redirect()->route('warga.dashboard'),
+            default => redirect()->route('warga.dashboard'),
         };
     }
 
@@ -36,24 +37,19 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 // 4. Role-Protected Dashboards (Using CheckRole Middleware)
-Route::middleware(['auth', 'role:warga'])->prefix('warga')->name('warga.')->group(function () {
-    Route::get('/dashboard', function () {
-        return 'Halo ' . Auth::user()->name . '! Ini Dashboard Warga (Nasabah). 
-                <form method="POST" action="' . route('logout') . '">' . csrf_field() . '<button type="submit">Logout</button></form>';
-    })->name('dashboard');
-});
-
 Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
-    Route::get('/dashboard', function () {
-        return 'Halo ' . Auth::user()->name . '! Ini Dashboard Petugas Lapangan. 
-                <form method="POST" action="' . route('logout') . '">' . csrf_field() . '<button type="submit">Logout</button></form>';
-    })->name('dashboard');
+    Route::get('/dashboard', [PetugasDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/pickup/{pickup}/start', [PetugasDashboardController::class, 'start'])->name('pickup.start');
+    Route::post('/pickup/{pickup}/weigh', [PetugasDashboardController::class, 'weigh'])->name('pickup.weigh');
+    Route::post('/pickup/{pickup}/reweigh', [PetugasDashboardController::class, 'reweigh'])->name('pickup.reweigh');
+    Route::post('/pickup/{pickup}/cancel-weigh', [PetugasDashboardController::class, 'cancelWeigh'])->name('pickup.cancel-weigh');
+    Route::post('/pickup/{pickup}/finish', [PetugasDashboardController::class, 'finish'])->name('pickup.finish');
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
-        return 'Halo ' . Auth::user()->name . '! Ini Dashboard Admin Pengelola. 
-                <form method="POST" action="' . route('logout') . '">' . csrf_field() . '<button type="submit">Logout</button></form>';
+        return 'Halo '.Auth::user()->name.'! Ini Dashboard Admin Pengelola.
+                <form method="POST" action="'.route('logout').'">'.csrf_field().'<button type="submit">Logout</button></form>';
     })->name('dashboard');
 });
 

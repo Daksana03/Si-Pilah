@@ -122,6 +122,15 @@ test('voucher validation is refused when warehouse stock is not enough', functio
         ->and($commodity->fresh()->stock)->toBe(1);
 });
 
+test('sale form carries the default sell price per category for auto fill', function () {
+    [$admin, , $category] = adminFixtures();
+
+    $this->actingAs($admin)
+        ->get(route('admin.dashboard'))
+        ->assertOk()
+        ->assertSee('data-sell-price="'.(float) $category->sell_price.'"', false);
+});
+
 test('recording a waste sale computes total and reduces collected stock', function () {
     [$admin, , $category] = adminFixtures();
 

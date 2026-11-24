@@ -315,7 +315,7 @@
                             <select id="sale-category" name="waste_category_id" required>
                                 <option value="">— Pilih kategori —</option>
                                 @foreach ($wasteCategories as $cat)
-                                    <option value="{{ $cat->id }}">
+                                    <option value="{{ $cat->id }}" data-sell-price="{{ (float) $cat->sell_price }}">
                                         {{ $cat->name }} (stok {{ number_format((float) $cat->stock, 2, ',', '.') }} {{ $cat->unit }} • jual Rp {{ number_format($cat->sell_price, 0, ',', '.') }})
                                     </option>
                                 @endforeach
@@ -329,6 +329,7 @@
                             <div class="form-group">
                                 <label for="sale-price">Harga Jual per Satuan</label>
                                 <input type="number" id="sale-price" name="price_per_unit" min="0" step="100" value="{{ $wasteCategories->first()->sell_price ?? '' }}" required>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Otomatis dari kategori terpilih; ubah hanya bila pabrik menawar beda.</span>
                             </div>
                         </div>
                         <div class="form-row">
@@ -418,6 +419,22 @@
     </main>
 
     <script src="{{ asset('js/warga-dashboard.js') }}" defer></script>
+
+    <script>
+        // Harga jual mengikuti kategori terpilih, tetap bisa diubah per transaksi
+        const saleCategory = document.getElementById('sale-category');
+        const salePrice = document.getElementById('sale-price');
+
+        if (saleCategory && salePrice) {
+            saleCategory.addEventListener('change', () => {
+                const option = saleCategory.selectedOptions[0];
+
+                if (option && option.dataset.sellPrice) {
+                    salePrice.value = Number(option.dataset.sellPrice);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
 
